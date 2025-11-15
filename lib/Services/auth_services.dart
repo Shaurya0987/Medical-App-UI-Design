@@ -1,7 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
-  final SupabaseClient supabase=Supabase.instance.client;
+  final SupabaseClient supabase = Supabase.instance.client;
 
   // SIGN UP
   Future<void> signUp(String email, String password) async {
@@ -18,6 +18,18 @@ class AuthService {
       password: password,
     );
   }
+
+  // SOCIAL LOGIN (Google, GitHub, Facebook, Apple)
+  Future<void> signInWithProvider(OAuthProvider provider) async {
+  await supabase.auth.signInWithOAuth(
+    provider,
+    redirectTo: 'bdver://login-callback',
+  );
+}
+
+
+
+
 
   // SEND PASSWORD RESET EMAIL
   Future<void> sendPasswordResetEmail(String email) async {
@@ -39,12 +51,8 @@ class AuthService {
     await supabase.auth.signOut();
   }
 
-
-  Future<void>logOut()async{
-    await supabase.auth.signOut();
-  }
-
-  User? currentUser(){
+  // CHECK CURRENT USER
+  User? currentUser() {
     return supabase.auth.currentUser;
   }
 }

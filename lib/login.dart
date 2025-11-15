@@ -3,6 +3,9 @@ import 'package:bdver/forgotPassword.dart';
 import 'package:bdver/homePage.dart';
 import 'package:bdver/signUp.dart'; // for MinimalLoginPage
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 class CheckLogin extends StatefulWidget {
   const CheckLogin({super.key});
@@ -12,29 +15,37 @@ class CheckLogin extends StatefulWidget {
 }
 
 class _CheckLoginState extends State<CheckLogin> {
-
-  final AuthService auth=AuthService();
+  final AuthService auth = AuthService();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool loading=false;
+  bool loading = false;
 
-  Future<void>login()async{
+  Future<void> login() async {
     setState(() {
-      loading=true;
+      loading = true;
     });
     try {
       await auth.signIn(
-        _emailController.text.trim()
-        ,_passwordController.text.trim());
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainScreen()));
-        ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("Login Successfully")));
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login Successfully")));
     } catch (error) {
-      ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text("Login Error $error")));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login Error $error")));
     }
+    setState(() {
+      loading=false;
+    });
   }
 
   @override
@@ -44,7 +55,8 @@ class _CheckLoginState extends State<CheckLogin> {
       body: Padding(
         padding: const EdgeInsets.all(20), // ✅ fixed
         child: Center(
-          child: SingleChildScrollView( // ✅ in case of small screens
+          child: SingleChildScrollView(
+            // ✅ in case of small screens
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -75,7 +87,10 @@ class _CheckLoginState extends State<CheckLogin> {
                     hintStyle: TextStyle(color: Colors.orange.shade200),
                     labelText: "Enter Your Email",
                     labelStyle: TextStyle(color: Colors.orange.shade200),
-                    prefixIcon: Icon(Icons.person, color: Colors.orange.shade200),
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Colors.orange.shade200,
+                    ),
                     filled: true,
                     fillColor: Colors.white24,
                     border: OutlineInputBorder(
@@ -89,14 +104,17 @@ class _CheckLoginState extends State<CheckLogin> {
 
                 // Password field
                 TextField(
-                  controller: _passwordController, 
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: "abc23%gsjh",
                     hintStyle: TextStyle(color: Colors.orange.shade200),
                     labelText: "Enter Your password",
                     labelStyle: TextStyle(color: Colors.orange.shade200),
-                    prefixIcon: Icon(Icons.email, color: Colors.orange.shade200),
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: Colors.orange.shade200,
+                    ),
                     filled: true,
                     fillColor: Colors.white24,
                     border: OutlineInputBorder(
@@ -114,7 +132,7 @@ class _CheckLoginState extends State<CheckLogin> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      loading?null:login();
+                      loading ? null : login();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange.shade200,
@@ -123,23 +141,88 @@ class _CheckLoginState extends State<CheckLogin> {
                       ),
                     ),
                     child: loading
-                      ?CircularProgressIndicator()
-                      :Text(
-                      "Sign In",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                        ? CircularProgressIndicator()
+                        : Text(
+                            "Sign In",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
+                ),
+                const SizedBox(height: 20),
+
+                // --- Social Login Icons ---
+                Text(
+                  "Or continue with",
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                ),
+                const SizedBox(height: 15),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Google
+                    GestureDetector(
+                      onTap: () async{
+                        await auth.signInWithProvider(OAuthProvider.google);
+                      },
+                      child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.white,
+                      child: FaIcon(FontAwesomeIcons.google,color:Colors.black,)
+                    ),
+                    ),
+
+                    // GitHub
+                    GestureDetector(
+                      onTap: () async{
+                        await auth.signInWithProvider(OAuthProvider.github);
+                      },
+                      child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.white,
+                      child: FaIcon(FontAwesomeIcons.github,color:Colors.black)
+                    ),
+                    ),
+
+                    // Facebook
+                    GestureDetector(
+                      onTap: () async{
+                        await auth.signInWithProvider(OAuthProvider.facebook);
+                      },
+                      child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.white,
+                      child: FaIcon(FontAwesomeIcons.facebook,color:Colors.black)
+                    ),
+                    ),
+
+                    // Apple
+                    GestureDetector(
+                      onTap: ()async{
+                        await auth.signInWithProvider(OAuthProvider.apple);
+                      },
+                      child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.white,
+                      child: FaIcon(FontAwesomeIcons.apple,color:Colors.black)),
+                    )
+                  ],
                 ),
 
                 const SizedBox(height: 20),
 
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordPage()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ForgotPasswordPage(),
+                      ),
+                    );
                   },
                   child: const Text(
                     "Forget Password?",
@@ -156,7 +239,9 @@ class _CheckLoginState extends State<CheckLogin> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MinimalLoginPage()),
+                      MaterialPageRoute(
+                        builder: (context) => MinimalLoginPage(),
+                      ),
                     );
                   },
                   child: const Text(

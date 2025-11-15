@@ -1,6 +1,8 @@
+import 'package:bdver/Services/auth_services.dart';
 import 'package:bdver/appointmentPage.dart';
 import 'package:bdver/doctorPage.dart';
 import 'package:bdver/profilePage.dart';
+import 'package:bdver/signUp.dart';
 import 'package:flutter/material.dart';
 
 // --- This is now the main screen of your app ---
@@ -12,6 +14,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final AuthService auth = AuthService();
+
+  Future<void> logOut() async {
+    return auth.signOut();
+  }
+
   // 1. Variable to keep track of the selected tab index
   int _selectedIndex = 0;
 
@@ -33,6 +41,28 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Medical App",
+          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await logOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MinimalLoginPage()),
+              );
+            },
+            icon: Icon(
+              Icons.logout_rounded,
+              color: Colors.orange.shade300,
+              size: 30,
+            ),
+          ),
+        ],
+      ),
       backgroundColor: const Color(0xFF4B6C68),
       // The body now shows the page corresponding to the selected index
       body: SafeArea(child: _pages[_selectedIndex]),
@@ -224,7 +254,6 @@ class HomeTabPage extends StatelessWidget {
     );
   }
 }
-
 
 // --- Reusable Card Widgets ---
 class CategoryCard extends StatelessWidget {
