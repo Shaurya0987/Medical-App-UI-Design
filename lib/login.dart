@@ -1,138 +1,175 @@
-import 'package:bdver/checkLogin.dart';
+import 'package:bdver/Services/auth_services.dart';
+import 'package:bdver/forgotPassword.dart';
+import 'package:bdver/homePage.dart';
+import 'package:bdver/signUp.dart'; // for MinimalLoginPage
 import 'package:flutter/material.dart';
 
-class MinimalLoginPage extends StatefulWidget {
-  const MinimalLoginPage({super.key});
+class CheckLogin extends StatefulWidget {
+  const CheckLogin({super.key});
 
   @override
-  State<MinimalLoginPage> createState() => _MinimalLoginPageState();
+  State<CheckLogin> createState() => _CheckLoginState();
 }
 
-class _MinimalLoginPageState extends State<MinimalLoginPage> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class _CheckLoginState extends State<CheckLogin> {
 
-  @override
-  void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
+  final AuthService auth=AuthService();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool loading=false;
+
+  Future<void>login()async{
+    setState(() {
+      loading=true;
+    });
+    try {
+      await auth.signIn(
+        _emailController.text.trim()
+        ,_passwordController.text.trim());
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MainScreen()));
+        ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Login Successfully")));
+    } catch (error) {
+      ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text("Login Error $error")));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF4B6C68), // background color
+      backgroundColor: const Color(0xFF4B6C68),
       body: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Create new\nAccount",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 50,
-                fontFamily: 'Inspiration',
-                color: Colors.orange[200],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(height: 40),
-            // Name Field
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.person, color: Colors.orange[200]),
-                hintText: "Your Name",
-                hintStyle: TextStyle(
-                  color: Colors.orange.shade200,
-                ),
-                filled: true,
-                fillColor: Colors.white24,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(height: 20),
-            // Email Field
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.email, color: Colors.orange[200]),
-                hintText: "hello@reallygreatsite.com",
-                hintStyle: TextStyle(color: Colors.orange[100]),
-                filled: true,
-                fillColor: Colors.white24,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(height: 20),
-            // Password Field
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.fingerprint, color: Colors.orange[200]),
-                hintText: "Password",
-                hintStyle: TextStyle(color: Colors.orange[100]),
-                filled: true,
-                fillColor: Colors.white24,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(height: 30),
-            // Sign Up Button
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Add sign up logic
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFFA66B),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                ),
-                child: Text(
-                  "Sign Up",
+        padding: const EdgeInsets.all(20), // ✅ fixed
+        child: Center(
+          child: SingleChildScrollView( // ✅ in case of small screens
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Login",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Inspiration',
+                    fontSize: 80,
+                    color: Colors.orange.shade200,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                Text(
+                  "Sign in to Continue",
+                  style: TextStyle(
+                    color: Colors.orange.shade200,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w100,
+                  ),
+                ),
+                const SizedBox(height: 50),
+
+                // Email field
+                TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    hintText: "hello@reallygreatsite.com",
+                    hintStyle: TextStyle(color: Colors.orange.shade200),
+                    labelText: "Enter Your Email",
+                    labelStyle: TextStyle(color: Colors.orange.shade200),
+                    prefixIcon: Icon(Icons.person, color: Colors.orange.shade200),
+                    filled: true,
+                    fillColor: Colors.white24,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(height: 30),
+
+                // Password field
+                TextField(
+                  controller: _passwordController, 
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: "abc23%gsjh",
+                    hintStyle: TextStyle(color: Colors.orange.shade200),
+                    labelText: "Enter Your password",
+                    labelStyle: TextStyle(color: Colors.orange.shade200),
+                    prefixIcon: Icon(Icons.email, color: Colors.orange.shade200),
+                    filled: true,
+                    fillColor: Colors.white24,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(height: 30),
+
+                // Sign Up Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      loading?null:login();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange.shade200,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    child: loading
+                      ?CircularProgressIndicator()
+                      :Text(
+                      "Sign In",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordPage()));
+                  },
+                  child: const Text(
+                    "Forget Password?",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 5),
+
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MinimalLoginPage()),
+                    );
+                  },
+                  child: const Text(
+                    "Sign Up!",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 15),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CheckLogin()),
-                );
-              },
-              child: Text(
-                "Already Have Account? Login !",
-                style: TextStyle(color: Colors.orange[100], fontSize: 14),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

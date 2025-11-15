@@ -1,4 +1,4 @@
-import 'package:bdver/login.dart';
+import 'package:bdver/signUp.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
