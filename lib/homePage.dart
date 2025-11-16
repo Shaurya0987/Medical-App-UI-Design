@@ -3,6 +3,7 @@ import 'package:bdver/appointmentPage.dart';
 import 'package:bdver/doctorPage.dart';
 import 'package:bdver/profilePage.dart';
 import 'package:bdver/signUp.dart';
+import 'package:bdver/uploadPage.dart';
 import 'package:flutter/material.dart';
 
 // --- This is now the main screen of your app ---
@@ -147,25 +148,27 @@ class HomeTabPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 25),
-            const Row(
+            Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 28,
                   backgroundImage: NetworkImage("https://picsum.photos/200"),
                 ),
-                SizedBox(width: 15),
+                const SizedBox(width: 15),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Welcome",
-                      style: TextStyle(
+                    TextButton(
+                      onPressed: () { 
+                        Navigator.pushReplacement(context,  MaterialPageRoute(builder: (context)=>StorageUIPage()));
+                       },
+                      child: const Text( "Welcome",style: TextStyle(
                         fontSize: 20,
                         color: Colors.orange,
                         fontWeight: FontWeight.bold,
-                      ),
+                      ),)
                     ),
-                    Text(
+                    const Text(
                       "Shaurya Thakur",
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),

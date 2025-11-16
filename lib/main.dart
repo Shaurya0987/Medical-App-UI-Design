@@ -1,4 +1,5 @@
 import 'package:bdver/splashScreen.dart';
+import 'package:bdver/uploadPage.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

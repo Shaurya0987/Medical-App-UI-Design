@@ -37,6 +37,10 @@ dependencies:
   intl: ^0.18.1 
   supabase_flutter: ^2.10.3
   font_awesome_flutter: ^10.7.0
+  image_picker: ^1.0.0       # for images
+  file_picker: ^8.0.2
+  path_provider: ^2.0.0      # for saving downloaded files
+  open_file: ^3.2.1          # for opening file after downloading
 
 dev_dependencies:
   flutter_test:
